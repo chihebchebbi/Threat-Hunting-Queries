@@ -1,0 +1,8 @@
+let timeframe = 14d; // In the last 14 days 
+// Use your sysmon Parser function name: https://github.com/Azure/Azure-Sentinel/tree/master/Parsers/Sysmon 
+Sysmon_Parser
+| where TimeGenerated >= ago(timeframe) 
+| where TargetFilename has "Zone.Identifier"
+| where Contents has_any (":blob","about:internet") 
+| where EventID == 15 // FileCreateStreamHash 
+| project TimeGenerated, Computer, UserName , Image, TargetFilename, CreationUtcTime, Contents
